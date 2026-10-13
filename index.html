@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050914">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Flush</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg-fx" aria-hidden="true"></div>
+<div id="toast" class="toast" role="status"></div>
+
+<!-- MENU -->
+<main id="screen-menu" class="screen active center">
+  <div class="logo">
+    <div class="suits"><span>♠</span><span class="r">♥</span><span class="r">♦</span><span>♣</span></div>
+    <h1 data-text="PIVE">Flush</h1>
+    <p class="tag">// jogo de cartas · 2 a 6 jogadores</p>
+  </div>
+  <div class="stack">
+    <button class="btn" id="btnOnline">🌐 Modo Online</button>
+    <button class="btn" id="btnLocal">👥 Modo Local</button>
+    <button class="btn ghost" id="btnRules">📖 Como jogar</button>
+  </div>
+  <p class="foot">Jogue entre celular, tablet e computador</p>
+</main>
+
+<!-- MODO LOCAL -->
+<main id="screen-local" class="screen center">
+  <div class="panel hud">
+    <h2>Modo Local</h2>
+    <p class="muted">Todos jogam no mesmo aparelho, passando-o a cada vez.</p>
+    <div class="counter">
+      <button class="btn small" id="lpMinus">−</button>
+      <span><b id="lpCount">2</b> jogadores</span>
+      <button class="btn small" id="lpPlus">+</button>
+    </div>
+    <div id="localNames" class="names"></div>
+    <button class="btn" id="btnStartLocal">Começar partida</button>
+    <button class="btn ghost" data-back>Voltar</button>
+  </div>
+</main>
+
+<!-- MODO ONLINE -->
+<main id="screen-online" class="screen center">
+  <div class="panel hud">
+    <h2>Modo Online</h2>
+    <label class="lbl" for="nameIn">Seu nome</label>
+    <input id="nameIn" maxlength="14" placeholder="Ex.: Ana" autocomplete="off">
+    <button class="btn" id="btnCreate">➕ Criar sala</button>
+    <div class="divider"><span>ou</span></div>
+    <label class="lbl" for="codeIn">Código da sala</label>
+    <input id="codeIn" maxlength="5" placeholder="ABCDE" autocomplete="off" autocapitalize="characters" class="code-in">
+    <button class="btn" id="btnJoin">🚪 Entrar na sala</button>
+    <p id="onlineMsg" class="msg"></p>
+    <button class="btn ghost" data-back>Voltar</button>
+  </div>
+</main>
+
+<!-- SALA / LOBBY -->
+<main id="screen-lobby" class="screen center">
+  <div class="panel hud">
+    <h2>Sala</h2>
+    <p class="muted">Compartilhe o código com seus amigos</p>
+    <div id="lobbyCode" class="roomcode">-----</div>
+    <div class="row">
+      <button class="btn small" id="btnCopyCode">Copiar código</button>
+      <button class="btn small" id="btnCopyLink">Compartilhar link</button>
+    </div>
+    <ul id="lobbyList" class="plist"></ul>
+    <p id="lobbyHint" class="muted"></p>
+    <button class="btn" id="btnStartOnline">▶ Iniciar partida</button>
+    <button class="btn ghost" id="btnLeaveLobby">Sair da sala</button>
+  </div>
+</main>
+
+<!-- JOGO -->
+<section id="screen-game" class="screen">
+  <header class="gbar">
+    <div class="gleft"><span id="roomTag" class="roomtag"></span><span id="net" class="net"></span></div>
+    <div class="row">
+      <button class="btn small ghost" id="btnRules2">?</button>
+      <button class="btn small ghost" id="btnLeaveGame">Sair</button>
+    </div>
+  </header>
+
+  <div id="opps" class="opps"></div>
+
+  <div class="table">
+    <div class="pile" id="stockPile" title="Comprar do monte">
+      <div id="stockCard"></div>
+      <div class="plabel">Monte (<span id="stockCount">0</span>)</div>
+    </div>
+    <div class="pile" id="discardPile" title="Pegar a carta do lixo">
+      <div id="discardCard"></div>
+      <div class="plabel">Lixo</div>
+    </div>
+  </div>
+
+  <p id="status" class="status"></p>
+
+  <div class="handbox">
+    <div id="handName" class="handname"></div>
+    <div id="hand" class="hand"></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn small ghost" id="btnSortSuit">Naipe</button>
+    <button class="btn small ghost" id="btnSortRank">Valor</button>
+    <button class="btn small ghost" id="btnLeft" aria-label="Mover para a esquerda">◀</button>
+    <button class="btn small ghost" id="btnRight" aria-label="Mover para a direita">▶</button>
+    <button class="btn" id="btnDiscard">Descartar</button>
+    <button class="btn gold" id="btnBate">🏆 Bater!</button>
+  </div>
+
+  <div id="overlay" class="overlay"></div>
+</section>
+
+<!-- REGRAS -->
+<div id="rules" class="modal">
+  <div class="modal-box hud">
+    <h2>Como jogar</h2>
+    <ul>
+      <li><b>Baralho:</b> 2 baralhos + 4 coringas (★ — valem qualquer carta).</li>
+      <li><b>Início:</b> cada jogador recebe 9 cartas. Uma carta é virada no lixo.</li>
+      <li><b>Na sua vez:</b> compre 1 carta (do monte ou a de cima do lixo) e depois descarte 1 carta.</li>
+      <li><b>Jogos válidos:</b> <i>trinca/quadra</i> (3 ou 4 cartas do mesmo valor, naipes diferentes) ou <i>sequência</i> (3 ou mais cartas seguidas do mesmo naipe; o Ás vale 1 ou depois do K).</li>
+      <li><b>Bater:</b> com 10 cartas na mão, se 9 delas formarem jogos válidos (ex.: 3+3+3, 4+5, 3+6, 9) e sobrar 1 para descartar, clique em <b>Bater!</b> e vença a rodada.</li>
+      <li>Não é permitido descartar, na mesma vez, a carta que você acabou de pegar do lixo.</li>
+      <li><b>Dica:</b> toque numa carta para selecioná-la; toque duas vezes (ou use <i>Descartar</i>) para jogá-la fora.</li>
+    </ul>
+    <button class="btn" id="btnCloseRules">Entendi</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
